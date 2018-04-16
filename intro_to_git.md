@@ -23,7 +23,7 @@ Many of these steps you can do in Git command line but let's keep it simple for 
 
 3. once in your folder directory type "Git init" this initializes a git repository in that folder.
 
-4. git pull https://github.com/Morrisdata/DataScience101.git
+4. git pull https://github.com/Dastraining/AN01.git
 
   a. This may work smoothly for you or cause a series of different error messages. What you are doing is connecting to git and pulling      all the info from that repository on to your desktop. Pretty powerful stuff but can be buggy. 
 
