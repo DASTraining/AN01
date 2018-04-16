@@ -58,7 +58,7 @@ WHERE ROWNUM <= 1000
 
 /* 
 After completing data analytic summary review fields of interest in each 
-realative table. While testing and developing always use filters and row 
+relative table. While testing and developing always use filters and row 
 limitations
 */
 SELECT *
@@ -109,7 +109,7 @@ WHERE ROWNUM <= 1000
 
 -- Give the fields user friendly names
 SELECT
-CONCAT(WIITEM, 
+WIITEM AS "ITEM NUMBER", 
 WISYTD AS "FISCAL YTD SALES IN UNITS",
 WISLS4 AS "THREE WKS AGO SALES IN UNITS", 
 WISLS3 AS "TWO WKS AGO SALES IN UNITS",
