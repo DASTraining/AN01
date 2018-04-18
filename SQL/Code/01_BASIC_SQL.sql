@@ -11,16 +11,10 @@ REQUESTER:
 DEPARTMENT:
 AUTHOR:
 DESCRIPTION:
-
 SOURCE:
-
-
 CALCULATIONS
-
-
 CHANGE LOG
 DATE    FIRST        LAST               CHANGE
-
 *******************************************************************************/
 
 --------------------------------------------------------------------------------
@@ -70,24 +64,22 @@ AND ROWNUM <=1000
 -----------------------------------------------------
 --    DISTINCT & COUNT                              -
 -----------------------------------------------------
-
--- 50 rows
-SELECT IMITEM
-FROM RPT_MOD.VW_INPRDDTA_INITMMP
+SELECT WCCITY
+FROM RPT_MOD.VW_INPRDINV_INWCTLP
 ORDER BY 1
 
-SELECT DISTINCT vendor
-FROM products
+SELECT DISTINCT WCCITY
+FROM RPT_MOD.VW_INPRDINV_INWCTLP
 ORDER BY 1
 
 
-SELECT DISTINCT COUNT(vendor)
-FROM products
+SELECT DISTINCT COUNT(WCCITY)
+FROM RPT_MOD.VW_INPRDINV_INWCTLP
 ORDER BY 1
 
--- 271 records 
-SELECT COUNT(DISTINCT vendor)
-FROM products
+SELECT COUNT(DISTINCT WCCITY)
+FROM RPT_MOD.VW_INPRDINV_INWCTLP
+ORDER BY 1
 
 /* debrief answer the question why SELECT distinct brought back duplicates but
 Select COUNT(DISTINCT field) removed duplicates */
