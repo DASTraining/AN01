@@ -1,0 +1,119 @@
+SELECT * 
+FROM rpt_mod.VW_inprdinv_inddesp
+
+--Simple CASE, Using Case for labels
+SELECT DISTINCT widept, 
+
+CASE 
+    WHEN widept='11' Then 'Tobacco'
+    WHEN widept='12' Then 'Candy'
+END AS Dept_desc
+
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIWHS5 = 110
+
+/*EXERCISE USE INDDESP TO SEE WHAT THE DEPARTMENT DESCRIPTION NAMES ARE AND 
+CONTINUE BUILDING THE CASE STATEMENT TO INCLUDE THESE NAMES *NOTE A JOIN WOULD 
+SOLVE THIS PROBLEM THIS IS A DRILL TO PRACTICE THE CODE.*/
+
+
+
+-- Optimize or not?
+SELECT DISTINCT widept, 
+
+CASE 
+    WHEN widept='11' Then 'Tobacco'
+    ELSE widept='12' Then 'Candy'
+END AS Dept_desc
+
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIWHS5 = 110
+
+-- pitfall of the above is losing data that you may not know about, having it all be inactive
+-- SOLUTION
+SELECT DISTINCT widept, 
+
+CASE 
+    WHEN widept='11' Then 'Tobacco'
+    ELSE widept
+END AS Dept_desc
+
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIWHS5 = 110
+
+-- CASE as Columns
+SELECT DISTINCT widept, 
+
+CASE 
+    WHEN widept='11' Then 'Tobacco'
+END AS Tobacco,
+CASE 
+    WHEN widept='12' Then 'Tobacco'
+END AS Candy
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIWHS5 = 110
+
+/*EXERCISE Build out a Column for each Department*/
+SELECT DISTINCT widept, 
+
+CASE 
+    WHEN widept='11' Then 'Tobacco'
+END AS Tobacco,
+CASE 
+    WHEN widept='12' Then 'Candy'
+END AS Candy
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIWHS5 = 110
+
+
+/* CASE within a CASE */
+SELECT DISTINCT widept, 
+CASE
+WHEN
+    CASE 
+        WHEN widept='11' Then 'Tobacco'
+    END = 'Tobacco' 
+OR
+    CASE 
+        WHEN widept='12' Then 'Candy'
+    END = 'Candy' 
+Then 'FOODS'
+END as Dept_Group
+
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIWHS5 = 110
+
+
+-- Using CASE as a filter
+SELECT DISTINCT widept 
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIWHS5 = 110
+AND
+CASE
+WHEN
+    CASE 
+        WHEN widept='11' Then 'Tobacco'
+    END = 'Tobacco' 
+OR
+    CASE 
+        WHEN widept='12' Then 'Candy'
+    END = 'Candy' 
+Then 'FOODS'
+END = 'FOODS'
+
+
+
+/* Exercise Using BETWEEN condition and Department Description table create
+SOFTLINES, HARDLINES, FRESH, FOOD_SUNDRIES
+
+
+Keep your new case statement in the SELECT clause and use it also in the WHERE clause to only review 
+SOFTLINES
+
+BONUS use a CTE to store this in a temp table for repeated use
+
+*/
+
+/* IN DEV
+LOW Profit Low Volume to High profit High volume matrix
+*/
