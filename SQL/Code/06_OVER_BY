@@ -1,0 +1,108 @@
+/*Partion by for Window functions. Window functions act kind of like Group by
+with the cavet that you can get detail and rolled up values in the same result sets. 
+It is essentially a hack to say I want to see my aggregate info plus my detail. */
+
+/* here is an example of grouping the data and still having the detail OVER begins
+the windowing process with a function, here I'm choosing AVG */
+SELECT DISTINCT WIWHS5, WISYTD
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIITEM = 2
+AND WISYTD != 0
+
+
+SELECT DISTINCT WIWHS5,  
+AVG(WISYTD) OVER (PARTITION BY WIWHS5)
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIITEM = 2
+AND WISYTD != 0
+
+
+
+-- without any partitioning the over will result in 1 answer for the entire result set
+SELECT total, sum(total) OVER () 
+FROM sales LIMIT 1000
+
+
+SELECT DISTINCT WIWHS5,  
+sum(WISYTD) OVER ()
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIITEM = 2
+AND WISYTD != 0
+
+
+/* TRY the above for average */
+
+
+-- How can you get a running total?  The order by without a partition can give you that
+SELECT DISTINCT WISYTD,  
+SUM(WISYTD)OVER(ORDER BY WISYTD DESC)
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIITEM = 2
+AND WISYTD != 0
+
+#example of Rank and order by
+SELECT DISTINCT WIWHS5, SUM(WISYTD), 
+RANK() OVER (PARTITION BY WIWHS5 ORDER BY sum(WISYTD) DESC) 
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIITEM = 2
+AND WISYTD != 0
+GROUP BY WIWHS5
+
+# lets look at three window functions side by side to see what they do
+
+SELECT WIWHS5, sum(WISYTD),
+ROW_NUMBER() OVER(ORDER BY WIWHS5),
+RANK() OVER(ORDER BY WIWHS5),
+DENSE_RANK() OVER(ORDER BY WIWHS5)
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIITEM = 2
+AND WISYTD != 0
+GROUP BY WIWHS5
+
+
+########################
+## in dev
+########################
+
+# if you have to filter the results you will need to place this process in a subselect. 
+# over is not allowed in Group by or having
+SELECT rnk,WIWHS5, WISYTD
+FROM
+  (SELECT  WIWHS5, WISYTD,
+          rank() OVER (PARTITION BY WIWHS5 ORDER BY WISYTD DESC) AS rnk
+    FROM RPT_MOD.VW_INPRDINV_INWITMP
+    WHERE WIITEM = 2
+    AND WISYTD != 0
+  ) sq
+WHERE rnk < 3
+
+
+# Excel Hack not working just example to talk about
+WITH 
+a  AS (SELECT WIWHS5, WISYTD, 
+ROW_NUMBER() OVER (PARTITION BY WIWHS5 ORDER BY WIWHS5) AS row1
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIITEM = 2
+AND WISYTD != 0
+), 
+
+b AS (SELECT WIWHS5, WISYTD , 
+ROW_NUMBER() OVER (PARTITION BY WIWHS5 ORDER BY WIWHS5)-1 as row2
+FROM RPT_MOD.VW_INPRDINV_INWITMP
+WHERE WIITEM = 2
+AND WISYTD != 0
+)
+
+SELECT 
+a.WIWHS5, 
+a.WISYTD, 
+b.WISYTD,
+a.row1, 
+b.row2
+-- (a.SUMWIYSTD-b.sumWISYTD)
+FROM a
+LEFT JOIN b
+
+ON a.row1 = b.row2 
+  
+  
